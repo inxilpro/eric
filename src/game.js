@@ -5,54 +5,45 @@ function saveCard(name, keep = true)
 	save(['cards', name], keep);
 }
 
-function cardList(cards) {
-	return Object.keys(cards)
+function cardList($) {
+	return Object.keys($.cards)
 		.filter(key => cards[key])
 		.map(name => `https://www.isleofcards.com/products/magic-the-gathering/${name}`);
 }
 
 start(() => {
 	initial(() => {
-		narrate('You are in a dark room.');
-		narrate("There is nothing but the strange sensation that you are not alone (which makes sense, considering you're hearing the voice of a mysterious narrator).");
-		narrate("(Also, you get the sense that this narrator is undeniably handsome.)");
-		narrate("(Moving on…)");
-		narrate('Your leg hurts, as though you recently fell.');
-		narrate('What will you do?');
-
-		saveCard('emn-harmless-offering');
-		saveCard('test2');
+		narrate('Pick a card. Any card.');
+		narrate('(Pick a number from 1-3)');
 	});
 
 	command(/^help/i, () => 'There is no help here. Only darkness.');
-	command('look', () => go('first'));
-	command(/^my name is (.*)/i, ($, name) => {
-		save('player.name', name);
-		narrate(`Nice to meet you, ${name}. But don't think I'm going to take it easy on you just because you're civil.`);
+	command(/([1-3])/, ($, pick) => {
+		switch (pick) {
+			case '1':
+				saveCard('emn-harmless-offering');
+				break;
+			case '2':
+				saveCard('ori-demonic-pact');
+				break;
+			case '3':
+				saveCard('emn-coax-from-the-blind-eternities');
+				break;
+		}
+
+		go('summary');
 	});
 });
 
-scene('first', () => {
+scene('summary', () => {
 	initial($ => {
-		narrate('Your eyes acclamate.');
-		narrate('You see a small crack of light in the corner.');
+		narrate('Nice choice. You got:');
 
-		const cards = cardList($.cards);
+		const cards = cardList($);
 		cards.forEach(card => narrate(card));
 
-		save('scene.name', 'first');
+		narrate('That\'s pretty much it…');
 	});
 
 	command(/^(yell|scream)(\s|$)/i, () => 'No one can hear you.');
-	command('next', $ => {
-		console.log('$', $);
-		go('second');
-	});
-});
-
-scene('second', () => {
-	initial($ => {
-		narrate('Works.');
-		console.log('$', $);
-	});
 });
