@@ -1,4 +1,5 @@
 
+import extend from 'extend';
 import { createAction, handleActions } from 'redux-actions';
 import { run } from './engine';
 
@@ -78,10 +79,7 @@ const reducer = handleActions({
 	[SET_GAME_DATA]: (state, { payload }) => {
 		return {
 			...state,
-			gameData: {
-				...state.gameData,
-				...payload
-			}
+			gameData: extend(true, {}, state.gameData, payload)
 		}
 	}
 });

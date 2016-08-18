@@ -1,5 +1,16 @@
 import { start, scene, narrate, go, initial, command, save } from './engine';
 
+function saveCard(name, keep = true)
+{
+	save(['cards', name], keep);
+}
+
+function cardList(cards) {
+	return Object.keys(cards)
+		.filter(key => cards[key])
+		.map(name => `https://www.isleofcards.com/products/magic-the-gathering/${name}`);
+}
+
 start(() => {
 	initial(() => {
 		narrate('You are in a dark room.');
@@ -8,6 +19,9 @@ start(() => {
 		narrate("(Moving on…)");
 		narrate('Your leg hurts, as though you recently fell.');
 		narrate('What will you do?');
+
+		saveCard('emn-harmless-offering');
+		saveCard('test2');
 	});
 
 	command(/^help/i, () => 'There is no help here. Only darkness.');
@@ -19,9 +33,12 @@ start(() => {
 });
 
 scene('first', () => {
-	initial(() => {
+	initial($ => {
 		narrate('Your eyes acclamate.');
 		narrate('You see a small crack of light in the corner.');
+
+		const cards = cardList($.cards);
+		cards.forEach(card => narrate(card));
 
 		save('scene.name', 'first');
 	});
