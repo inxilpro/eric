@@ -1,11 +1,12 @@
 
 import { createAction, handleActions } from 'redux-actions';
-import { run, NO_INPUT } from './engine';
+import { run } from './engine';
 
 // Actions
 const KEYPRESS = 'eric/KEYPRESS';
 const LINE = 'eric/LINE';
 const GO = 'eric/GO';
+const SET_GAME_DATA = 'eric/SET_GAME_DATA';
 
 // Reducer
 const reducer = handleActions({
@@ -66,11 +67,21 @@ const reducer = handleActions({
 
 	[GO]: (state, { payload }) => {
 		// Send to Engine
-		process.nextTick(() => run(payload, NO_INPUT, state));
+		process.nextTick(() => run(payload));
 
 		return {
 			...state,
 			scene: payload
+		}
+	},
+	
+	[SET_GAME_DATA]: (state, { payload }) => {
+		return {
+			...state,
+			gameData: {
+				...state.gameData,
+				...payload
+			}
 		}
 	}
 });
@@ -79,11 +90,13 @@ const reducer = handleActions({
 const keypress = createAction(KEYPRESS);
 const line = createAction(LINE);
 const go = createAction(GO);
+const setGameData = createAction(SET_GAME_DATA);
 
 // Export
 export {
 	reducer as default,
 	keypress,
 	line,
-	go
+	go,
+	setGameData
 }

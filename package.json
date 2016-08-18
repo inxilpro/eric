@@ -8,6 +8,7 @@
     "redux-immutable-state-invariant": "^1.2.3"
   },
   "dependencies": {
+    "object-path": "^0.11.1",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "react-motion": "^0.4.4",

@@ -1,3 +1,4 @@
+import { set as setAtPath } from 'object-path';
 import createActionCreators from './actionCreators';
 import * as actionCreators from './store';
 
@@ -7,16 +8,18 @@ const NO_INPUT = Symbol();
 var actions, store, lastInput = NO_INPUT;
 var openingScene = () => null;
 
-export function run(scene, input = NO_INPUT, state)
+export function run(scene, input = NO_INPUT)
 {
+	const state = store.getState();
+
 	lastInput = input;
 
 	if (!scene) {
-		return openingScene(input, state);
+		return openingScene(state.gameData);
 	}
 
 	if (scenes[scene]) {
-		return scenes[scene](input, state);
+		return scenes[scene](state.gameData);
 	}
 
 	actions.line({
@@ -54,26 +57,42 @@ export function go(scene)
 
 export function initial(fn) {
 	if (NO_INPUT === lastInput) {
-		fn();
+		const state = store.getState();
+		fn(state.gameData);
 	}
 }
 
 export function command(matcher, fn) {
+	const state = store.getState();
 	var result;
+
+	console.log('matcher', matcher, 'lastInput', lastInput);
 
 	if (NO_INPUT === lastInput) {
 		return;
 	}
 
-	if (matcher instanceof RegExp && matcher.test(lastInput)) {
-		result = fn();
+	if (matcher instanceof RegExp) {
+		const matches = lastInput.match(matcher);
+		console.log(matches);
+		if (matches && matches.length) {
+			matches[0] = (state.gameData);
+			result = fn.apply(fn, matches);
+		}
 	}
 
 	if (lastInput === matcher) {
-		result = fn();
+		result = fn(state.gameData);
 	}
 
 	if (result && 'string' === typeof result) {
 		narrate(result);
 	}
+}
+
+export function save(path, data) {
+	const newData = {};
+	setAtPath(newData, path, data);
+	console.log('save', newData);
+	actions.setGameData(newData);
 }
