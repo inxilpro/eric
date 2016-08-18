@@ -63,7 +63,6 @@ class App extends Component {
 	scrollDown() {
 		const target = this.refs.app.scrollHeight - this.refs.app.offsetHeight;
 		if (this.refs.app.scrollTop !== target) {
-			console.log('Scrolling to bottom.');
 			this.refs.app.scrollTop = target;
 		}
 	}

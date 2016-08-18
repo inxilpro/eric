@@ -59,10 +59,21 @@ export function initial(fn) {
 }
 
 export function command(matcher, fn) {
+	var result;
+
+	if (NO_INPUT === lastInput) {
+		return;
+	}
+
+	if (matcher instanceof RegExp && matcher.test(lastInput)) {
+		result = fn();
+	}
+
 	if (lastInput === matcher) {
-		const result = fn();
-		if ('string' === typeof result) {
-			narrate(result);
-		}
+		result = fn();
+	}
+
+	if (result && 'string' === typeof result) {
+		narrate(result);
 	}
 }
