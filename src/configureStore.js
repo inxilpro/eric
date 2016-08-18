@@ -7,29 +7,25 @@ export default function configureStore() {
 	let middleware = applyMiddleware();
 	let enhancer;
 
-	if (process && process.env && 'production' !== process.env.NODE_ENV) {
-		let middlewares = [require('redux-immutable-state-invariant')()]
-		middleware = applyMiddleware(...middlewares);
+	let middlewares = [require('redux-immutable-state-invariant')()]
+	middleware = applyMiddleware(...middlewares);
 
-		let getDebugSessionKey = function () {
-			const matches = window.location.href.match(/[?&]debug_session=([^&]+)\b/);
-			return (matches && matches.length) ? matches[1] : null;
-		};
+	let getDebugSessionKey = function () {
+		const matches = window.location.href.match(/[?&]debug_session=([^&]+)\b/);
+		return (matches && matches.length) ? matches[1] : null;
+	};
 
-		enhancer = compose(
-			middleware,
-			window.devToolsExtension ? window.devToolsExtension() : noop => noop,
-			persistState(getDebugSessionKey())
-		);
-	} else {
-		enhancer = compose(middleware);
-	}
+	enhancer = compose(
+		middleware,
+		window.devToolsExtension ? window.devToolsExtension() : noop => noop,
+		persistState(getDebugSessionKey())
+	);
 
 	const store = createStore(reducer, initialState, enhancer);
 
 	// Enable Webpack hot module replacement for reducers
 	if (module.hot) {
-		module.hot.accept('./store', () =>
+		module.hot.accept('./store.js', () =>
 			store.replaceReducer(require('./store').default)
 		);
 	}

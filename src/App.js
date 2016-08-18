@@ -8,6 +8,10 @@ import { run } from './engine';
 import './game';
 import './app.css';
 
+if (module.hot) {
+	module.hot.accept('./game', () => require('./game'));
+}
+
 function mapStateToProps(state) {
 	return state;
 }
