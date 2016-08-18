@@ -1,0 +1,60 @@
+html, body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	background: #333;
+	color: #eee;
+	font-size: 20px;
+}
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+#root {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	font-family: 'Inconsolata', monospace;
+	padding: 25px;
+}
+
+.app {
+	flex-grow: 1;
+	overflow: auto;
+}
+
+.line {
+	flex: 1 1 auto;
+}
+
+.prompt {
+	color: yellow;
+	margin-right: .5rem;
+}
+.input {
+	flex: 1 1 auto;
+}
+.cursor {
+	display: inline-block;
+	background-color: #eee;
+	animation: 1s blink step-end infinite;
+}
+
+.narrator .prefix {
+	color: #ccf;
+}
+
+.input .prefix {
+	color: #fcc;
+}
+
+@keyframes "blink" {
+	from, to {
+		background-color: transparent;
+	}
+	50% {
+		background-color: #eee;
+	}
+}
