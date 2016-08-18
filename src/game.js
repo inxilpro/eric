@@ -12,13 +12,20 @@ function cardList($) {
 		.map(name => `https://www.isleofcards.com/products/magic-the-gathering/${name}`);
 }
 
+function common() {
+	command(/^help/i, () => 'There is no help here. Only darkness.');
+	command(/^(?:yell|scream|shout)(?:\s(.*))?$/i, ($, words) => {
+		narrate(`There's no one here to hear your desperate words.`);
+	});
+}
+
 start(() => {
 	initial(() => {
 		narrate('Pick a card. Any card.');
 		narrate('(Pick a number from 1-3)');
 	});
 
-	command(/^help/i, () => 'There is no help here. Only darkness.');
+	common();
 	command(/([1-3])/, ($, pick) => {
 		switch (pick) {
 			case '1':
@@ -50,5 +57,6 @@ scene('summary', () => {
 		go(null);
 	});
 
+	common();
 	command(/^(yell|scream)(\s|$)/i, () => 'No one can hear you.');
 });
