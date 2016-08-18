@@ -66,15 +66,12 @@ export function command(matcher, fn) {
 	const state = store.getState();
 	var result;
 
-	console.log('matcher', matcher, 'lastInput', lastInput);
-
 	if (NO_INPUT === lastInput) {
 		return;
 	}
 
 	if (matcher instanceof RegExp) {
 		const matches = lastInput.match(matcher);
-		console.log(matches);
 		if (matches && matches.length) {
 			matches[0] = (state.gameData);
 			result = fn.apply(fn, matches);
@@ -93,6 +90,5 @@ export function command(matcher, fn) {
 export function save(path, data) {
 	const newData = {};
 	setAtPath(newData, path, data);
-	console.log('save', newData);
 	actions.setGameData(newData);
 }

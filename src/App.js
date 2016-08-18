@@ -25,8 +25,9 @@ function mapDispatchToProps(dispatch) {
 class App extends Component {
 	constructor(props) {
 		super(props);
+
+		this.handleKeyDown = this.handleKeyDown.bind(this);
 		this.handleKeyPress = this.handleKeyPress.bind(this);
-		this.handleKeyUp = this.handleKeyUp.bind(this);
 
 		process.nextTick(() => run());
 	}
@@ -42,25 +43,33 @@ class App extends Component {
 	}
 
 	componentDidMount() {
+		window.addEventListener('keydown', this.handleKeyDown);
 		window.addEventListener('keypress', this.handleKeyPress);
-		window.addEventListener('keyup', this.handleKeyUp);
 	}
 
 	componentWillUnmount() {
-	    window.removeEventListener('keypress', this.handleKeyUp);
-	    window.removeEventListener('keyup', this.handleKeyUp);
+	    window.removeEventListener('keydown', this.handleKeyDown);
+		window.removeEventListener('keypress', this.handleKeyPress);
 	}
 
 	handleKeyPress(e) {
-		const { key } = e;
-		this.props.actions.keypress(key);
+		if (e.metaKey || e.ctrlKey || e.altKey) {
+			return;
+		}
+
+		// Handle backspace and enter in keydown for cross-compat reasons
+		if (8 === e.keyCode || 13 === e.keyCode) {
+			return;
+		}
+
+		this.props.actions.keypress(e.keyCode);
 		this.scrollDown();
 	}
 
-	handleKeyUp(e) {
-		const { key } = e;
-		if ('Enter' === key || 'Backspace' === key) {
-			this.handleKeyPress(e);
+	handleKeyDown(e) {
+		if (8 === e.keyCode || 13 === e.keyCode) {
+			this.props.actions.keypress(e.keyCode);
+			this.scrollDown();
 		}
 	}
 

@@ -30,6 +30,9 @@ start(() => {
 			case '3':
 				saveCard('emn-coax-from-the-blind-eternities');
 				break;
+			default:
+				narrate('Pick something!');
+				break;
 		}
 
 		go('summary');

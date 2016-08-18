@@ -1,6 +1,7 @@
 
 import extend from 'extend';
 import { createAction, handleActions } from 'redux-actions';
+import kp from './keypress';
 import { run } from './engine';
 
 // Actions
@@ -13,47 +14,36 @@ const SET_GAME_DATA = 'eric/SET_GAME_DATA';
 const reducer = handleActions({
 	[KEYPRESS]: (state, { payload }) => {
 		const { currentLine, lines } = state;
+		const key = kp(payload);
 
-		switch (payload) {
-			case 'Enter':
-				if (currentLine.length) {
-					// Send to Engine
-					process.nextTick(() => run(state.scene, currentLine));
+		if ('Enter' === key && currentLine.length) {
+			// Send to Engine
+			process.nextTick(() => run(state.scene, currentLine));
 
-					// And to UI
-					const nextLines = lines.slice();
-					nextLines.push({
-						mode: 'input',
-						text: currentLine
-					});
-					return {
-						...state,
-						currentLine: '',
-						lines: nextLines
-					}
-				}
-				break;
-			case 'Backspace':
-				if (currentLine.length) {
-					return {
-						...state,
-						currentLine: currentLine.slice(0, -1)
-					};
-				}
-				break;
-			default:
-				if (1 === payload.length) {
-					return {
-						...state,
-						currentLine: (currentLine + payload)
-					}
-				}
-				break;
+			// And to UI
+			const nextLines = lines.slice();
+			nextLines.push({
+				mode: 'input',
+				text: currentLine
+			});
+			return {
+				...state,
+				currentLine: '',
+				lines: nextLines
+			}
+		} else if ('Backspace' === key && currentLine.length) {
+			return {
+				...state,
+				currentLine: currentLine.slice(0, -1)
+			};
+		} else if (1 === key.length) {
+			return {
+				...state,
+				currentLine: (currentLine + key)
+			}
 		}
 
-		return {
-			...state
-		};
+		return state;
 	},
 
 	[LINE]: (state, { payload }) => {
