@@ -6,7 +6,8 @@ function saveCard(name, keep = true)
 }
 
 function cardList($) {
-	return Object.keys($.cards)
+	const { cards } = $;
+	return Object.keys(cards)
 		.filter(key => cards[key])
 		.map(name => `https://www.isleofcards.com/products/magic-the-gathering/${name}`);
 }
@@ -42,7 +43,8 @@ scene('summary', () => {
 		const cards = cardList($);
 		cards.forEach(card => narrate(card));
 
-		narrate('That\'s pretty much it…');
+		narrate('...');
+		go(null);
 	});
 
 	command(/^(yell|scream)(\s|$)/i, () => 'No one can hear you.');
